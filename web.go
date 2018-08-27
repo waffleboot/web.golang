@@ -19,7 +19,6 @@ var files_pattern string
 var dir_html_template *template.Template
 
 type dir_template_context struct {
-	dir string
 	Name string
 	Files []os.FileInfo
 }
@@ -52,7 +51,7 @@ func show_dir(dir string, path string, resp http.ResponseWriter, req *http.Reque
 	sort.Slice(files,func(i,j int)bool{
 		return files[i].ModTime().After(files[j].ModTime())
 	})	
-	if dir_html_template.Execute(resp,dir_template_context{dir,path,files}) != nil {
+	if dir_html_template.Execute(resp,dir_template_context{path,files}) != nil {
 		http.Error(resp, fmt.Sprintf("unable to show content of dir %s", dir),http.StatusInternalServerError)
 		return
 	}
