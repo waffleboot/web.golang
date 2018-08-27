@@ -14,17 +14,6 @@ import (
 	"strconv"
 )
 
-func http_port() int {
-	if len(os.Args) == 1 { return 8000 }
-	p,e := strconv.Atoi(os.Args[1])
-	switch {
-	case e != nil:  log.Fatal("unable to parse port number")
-	case p < 0:     log.Fatal("port number should be positive number")
-	case p > 65536: log.Fatal("port number should be at most 65536")
-	}
-	return p
-}
-
 var showDir bool
 var files_pattern string
 var dir_html_template *template.Template
