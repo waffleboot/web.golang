@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"html/template"
 	"os"
-	"sort"
+	"sort"	
 	"net/http"
 	"strconv"
 )
@@ -64,7 +64,12 @@ func load_file(name string, resp http.ResponseWriter, req *http.Request) {
 
 func make_dir_template() {
 	var e error
-	dir_html_template,e = template.New("dir").Parse(`<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"><html>
+	m := make(map[string]interface{})
+	r := strings.NewReplacer("_"," ","-"," ")
+	m["replace"] = func(s string) string {
+		return r.Replace(s)
+	}
+	dir_html_template,e = template.New("dir").Funcs(m).Parse(`<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"><html>
 	<title>Directory listing for {{.Name}}</title>
 	<body>
 	<h2>Directory listing for {{.Name}}</h2>
@@ -72,7 +77,7 @@ func make_dir_template() {
 	<ul>
 	{{$context := .}}
 	{{range .Files}}
-	{{if $context.ShowFile . }}<li><a href="{{.Name}}">{{.Name}}</a>{{end}}
+	{{if $context.ShowFile . }}<li><a href="{{.Name}}">{{ replace .Name }}</a>{{end}}
 	{{end}}
 	</ul>
 	<hr>
