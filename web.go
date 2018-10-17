@@ -2,8 +2,6 @@
 package main
 
 import (
-	"syscall"
-	"time"
 	"log"
 	"fmt"
 	"flag"
@@ -36,11 +34,6 @@ func (c dir_template_context) ShowFile(fi os.FileInfo) bool {
 	r,e := filepath.Match(files_pattern,fi.Name())
 	if e != nil { return false }
 	return r
-}
-
-func birthTime(fi os.FileInfo) time.Time {
-	s := fi.Sys().(*syscall.Stat_t)
-	return time.Unix(s.Birthtimespec.Unix())
 }
 
 func show_dir(dir string, path string, resp http.ResponseWriter, req *http.Request) {
