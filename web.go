@@ -2,6 +2,8 @@
 package main
 
 import (
+	"syscall"
+	"time"
 	"log"
 	"fmt"
 	"flag"
@@ -36,6 +38,11 @@ func (c dir_template_context) ShowFile(fi os.FileInfo) bool {
 	return r
 }
 
+func birthTime(fi os.FileInfo) time.Time {
+	s := fi.Sys().(*syscall.Stat_t)
+	return time.Unix(s.Birthtimespec.Unix())
+}
+
 func show_dir(dir string, path string, resp http.ResponseWriter, req *http.Request) {
 	file,e := os.Open(dir)
 	if e != nil {
@@ -49,7 +56,7 @@ func show_dir(dir string, path string, resp http.ResponseWriter, req *http.Reque
 		return
 	}
 	sort.Slice(files,func(i,j int)bool{
-		return files[i].ModTime().After(files[j].ModTime())
+		return birthTime(files[i]).After(birthTime(files[j]))
 	})	
 	if dir_html_template.Execute(resp,dir_template_context{path,files}) != nil {
 		http.Error(resp, fmt.Sprintf("unable to show content of dir %s", dir),http.StatusInternalServerError)
