@@ -11,6 +11,7 @@ import (
 )
 
 var showDir bool
+var sortByName bool
 var files_pattern string
 
 func showFile(fi os.FileInfo) bool {
@@ -26,14 +27,16 @@ func showFile(fi os.FileInfo) bool {
 	return r
 }
 
-func (d webDir) Sort(a os.FileInfo, b os.FileInfo) bool {
-	return birthTime(a).After(birthTime(b))
+func (d webDir) Sort(a os.FileInfo, b os.FileInfo) (c bool) {
+	if c = birthTime(a).After(birthTime(b)); sortByName { c = a.Name() < b.Name() }
+	return
 } 
 
 func main() {
 
 	portPtr := flag.Int("port",8000,"port number")
 	flag.BoolVar(&showDir,"dir",false,"show dir")
+	flag.BoolVar(&sortByName,"sort",false,"sort by name")
 	flag.StringVar(&files_pattern,"files","","files pattern")
 	flag.Parse()
 
