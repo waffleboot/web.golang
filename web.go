@@ -69,31 +69,31 @@ func readConfig(name string) ([]string, error) {
 	return []string{"-files", "*." + name}, nil
 }
 
-func readArgs(args []string, c config) (config, string) {
+func readArgs(args []string) string {
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	port := f.Int("port", c.port, "port number")
-	showDir := f.Bool("dir", c.showDir, "show dir")
-	sortByName := f.Bool("sort", c.sortByName, "sort by name")
-	filesPattern := f.String("files", c.filesPattern, "files pattern")
+	f.IntVar(&conf.port, "port", conf.port, "port number")
+	f.BoolVar(&conf.showDir, "dir", conf.showDir, "show dir")
+	f.BoolVar(&conf.sortByName, "sort", conf.sortByName, "sort by name")
+	f.StringVar(&conf.filesPattern, "files", conf.filesPattern, "files pattern")
 	f.Parse(args)
 	params := ""
 	if f.NArg() > 0 {
 		params = f.Arg(0)
 	}
-	return config{*port, *showDir, *sortByName, *filesPattern}, params
+	return params
 }
 
 func main() {
 
 	var configName string
-	conf, configName = readArgs(os.Args[1:], conf)
+	configName = readArgs(os.Args[1:])
 	if len(configName) > 0 {
 		configLine, err := readConfig(configName)
 		if err != nil {
 			log.Fatal(err)
 		}
-		conf, _ = readArgs(configLine, conf)
-		conf, _ = readArgs(os.Args[1:], conf)
+		readArgs(configLine)
+		readArgs(os.Args[1:])
 	}
 
 	cwd, _ := os.Getwd()
