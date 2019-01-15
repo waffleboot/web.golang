@@ -20,7 +20,7 @@ type config struct {
 	filesPattern string
 }
 
-var conf config = config{8000, false, false, ""}
+var conf = config{8000, false, false, ""}
 
 func (d webDir) Sort(a os.FileInfo, b os.FileInfo) (c bool) {
 	if c = birthTime(a).After(birthTime(b)); conf.sortByName {
