@@ -54,6 +54,7 @@ func readConfig(name string) ([]string, error) {
 	if err != nil {
 		return []string{"-files", "*." + name}, nil
 	}
+	defer f.Close()
 	r := bufio.NewReader(f)
 	s := bufio.NewScanner(r)
 	for s.Scan() {
