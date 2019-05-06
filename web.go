@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"log"
-	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -78,5 +77,5 @@ func main() {
 	}
 	cwd, _ := os.Getwd()
 	http.Handle("/", http.FileServer(webDir(cwd)))
-	log.Fatal(http.ListenAndServe(net.JoinHostPort("localhost", strconv.Itoa(*g_port)), nil))
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*g_port), nil))
 }
