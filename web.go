@@ -7,6 +7,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strconv"
@@ -77,5 +78,11 @@ func main() {
 	}
 	cwd, _ := os.Getwd()
 	http.Handle("/", http.FileServer(webDir(cwd)))
+	http.HandleFunc("/sleep", func(w http.ResponseWriter, r *http.Request) {
+		if cmd := exec.Command("pmset", "sleepnow"); cmd != nil {
+			cmd.Run()
+			os.Exit(0)
+		}
+	})
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*g_port), nil))
 }
